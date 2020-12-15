@@ -28,6 +28,7 @@ parser MyParser(packet_in pkt, out headers hdr, inout metadata meta, inout stand
 // we do not need to care or even know about checksums, can stay empty...
 control MyVerifyChecksum(inout headers hdr, inout metadata meta) { apply { } }
 
+// send everything coming in for specific destination MAC address to a fixed port
 control MyIngress(inout headers hdr, inout metadata meta, inout standard_metadata_t std_meta) {
     apply {
         // forward all packets going to mac address of H1 to port 1, same for H2 and port 2

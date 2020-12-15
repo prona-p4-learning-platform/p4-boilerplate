@@ -28,6 +28,7 @@ parser MyParser(packet_in pkt, out headers hdr, inout metadata meta, inout stand
 // we do not need to care or even know about checksums, can stay empty...
 control MyVerifyChecksum(inout headers hdr, inout metadata meta) { apply { } }
 
+// use a MAC address table to decide where to forward packets (layer 2 forwarding/filtering) and also support broadcasts (layer 2 flooding)
 control MyIngress(inout headers hdr, inout metadata meta, inout standard_metadata_t std_meta) {
     // action to forward packet to egress port
     action forward(bit<9> egress_port) {

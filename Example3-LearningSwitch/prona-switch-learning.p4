@@ -42,6 +42,7 @@ parser MyParser(packet_in pkt, out headers hdr, inout metadata meta, inout stand
 // we do not need to care or even know about checksums, can stay empty...
 control MyVerifyChecksum(inout headers hdr, inout metadata meta) { apply { } }
 
+// extend basic forwarding logic from previous example to include learning of MAC addresses and use it to achieve flood & filter
 control MyIngress(inout headers hdr, inout metadata meta, inout standard_metadata_t std_meta) {
     // action to learn source MAC address, copy ingress_port to be available in egress, clone packet to CPU port (ingress to egress)
     action learnSrcMacAddr() {
@@ -93,7 +94,7 @@ control MyIngress(inout headers hdr, inout metadata meta, inout standard_metadat
     }
 }
 
-// filter broadcasts going out on the port they came in
+// send cloned packets to CPU/control plane, filter broadcasts going out on the port they came in
 control MyEgress(inout headers hdr, inout metadata meta, inout standard_metadata_t std_meta) {
     apply {
         // if packet was cloned (instance_type == 1)

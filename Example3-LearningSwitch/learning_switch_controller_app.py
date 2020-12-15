@@ -1,4 +1,3 @@
-# import struct
 from p4utils.utils.topology import Topology
 from p4utils.utils.sswitch_API import SimpleSwitchAPI
 from scapy.all import Ether, sniff, Packet, BitField
@@ -33,8 +32,7 @@ class LearningSwitchControllerApp(object):
             self.controller.mirroring_add(MIRROR_SESSION_ID, self.cpu_port)
 
     def add_mcast_grp(self):
-        interfaces_to_port = self.topo[self.switchName]["interfaces_to_port"].copy(
-        )
+        interfaces_to_port = self.topo[self.switchName]["interfaces_to_port"].copy()
         # filter lo and cpu port
         interfaces_to_port.pop('lo', None)
         interfaces_to_port.pop(self.topo.get_cpu_port_intf(self.switchName), None)
