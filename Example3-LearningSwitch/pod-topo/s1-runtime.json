@@ -1,0 +1,7 @@
+{
+  "target": "bmv2",
+  "p4info": "build/prona-switch-learning.p4.p4info.txt",
+  "bmv2_json": "build/prona-switch-learning.json",
+  "table_entries": [
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "target": "bmv2",
+  "p4info": "build/prona-repeater.p4.p4info.txt",
+  "bmv2_json": "build/prona-repeater.json",
+  "table_entries": [
+  ]
+}

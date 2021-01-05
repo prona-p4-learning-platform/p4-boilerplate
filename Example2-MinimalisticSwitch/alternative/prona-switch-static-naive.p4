@@ -1,4 +1,4 @@
-/* -*- P4_16 -*- */
+/* -*- P4_16 -*- */
 // ProNA Switch Static Naive
 #include <core.p4>
 #include <v1model.p4>
@@ -17,7 +17,7 @@ struct headers {
 
 struct metadata { }
 
-// Parser to extract ethernet header, switch is working on data link layer/layer 2
+// Parser to extract ethernet header, switch is working on data link layer/layer 2
 parser MyParser(packet_in pkt, out headers hdr, inout metadata meta, inout standard_metadata_t std_meta) {
     state start{
         pkt.extract(hdr.ethernet);
@@ -31,7 +31,7 @@ control MyVerifyChecksum(inout headers hdr, inout metadata meta) { apply { } }
 // send everything coming in for specific destination MAC address to a fixed port
 control MyIngress(inout headers hdr, inout metadata meta, inout standard_metadata_t std_meta) {
     apply {
-        // forward all packets going to mac address of H1 to port 1, same for H2 and port 2
+        // forward all packets going to mac address of H1 to port 1, same for H2 and port 2
         if (hdr.ethernet.dstAddr == 0x00000a000001) { std_meta.egress_spec = 1; }
         if (hdr.ethernet.dstAddr == 0x00000b000002) { std_meta.egress_spec = 2; }
     }
