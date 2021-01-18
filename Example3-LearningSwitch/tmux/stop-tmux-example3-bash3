@@ -1,0 +1,5 @@
+#!/bin/bash
+SESSION="Ex3-bash3"
+WORKDIR="/home/p4/p4-boilerplate/Example3-LearningSwitch"
+
+tmux kill-session -t $SESSION 2>/dev/null

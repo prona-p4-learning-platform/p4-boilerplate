@@ -49,7 +49,7 @@ class LearningSwitchControllerApp(object):
 
     def learn(self, learningData):
         for macAddr, ingressPort in learningData:
-            print "macAddr: %012X ingressPort: %s " % (macAddr, ingressPort)
+            print("macAddr: %012X ingressPort: %s ", macAddr, ingressPort)
             self.controller.table_add("srcMacAddr", "NoAction", [str(macAddr)])
             self.controller.table_add("dstMacAddr", "forward", [
                                       str(macAddr)], [str(ingressPort)])
