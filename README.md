@@ -4,7 +4,7 @@ Currently p4-boilerplate uses the p4-tutorials, nsg-ethz [p4-learning](https://g
 
 ## Installation
 
-Install the [p4-tutorials VM](https://github.com/p4lang/tutorials) or setup a Linux host with the provided [bootstrap](https://github.com/p4lang/tutorials/tree/master/vm) scripts (you can find pre-build VM images in the Web (e.g., [here](https://p4.org/events/2019-04-30-p4-developer-day/)), but we recommend building a fresh install). 
+Install the [p4-tutorials VM](https://github.com/p4lang/tutorials) or setup a Linux host with the provided [bootstrap](https://github.com/p4lang/tutorials/tree/master/vm) scripts (you can find pre-build VM images in the Web (e.g., [here](https://p4.org/events/2019-04-30-p4-developer-day/)), but we recommend building a fresh install). You can also prepare a Ubuntu VM by using the [installation](https://github.com/jafingerhut/p4-guide/blob/master/bin/install-p4dev-v2.sh) scripts from the p4 guide repo.
 
 ```
 git clone https://github.com/prona-p4-learning-platform/p4-boilerplate
