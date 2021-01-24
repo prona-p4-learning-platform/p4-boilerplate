@@ -6,7 +6,7 @@
 * Correspondingly, topology now mentions MAC address of each host
 * All frames reaching the switch with a destination MAC address of 00:00:00:00:00:02 should go out on Port 2, same for MAC address of H1 on Port 1
   * Layer 2 Ethernet header needs to be parsed
-  * As for real-world Layer 2 network elements, switch needs a table to matchincoming destination MAC address and select approriate egress port
+  * As for real-world Layer 2 network elements, switch needs a table to match incoming destination MAC address and select approriate egress port
 
 ```mermaid
     graph LR;
