@@ -12,9 +12,7 @@ git clone https://github.com/p4lang/tutorials
 ln -s tutorials/utils utils
 ```
 
-For testing and non-production setups, we also provide a container image containing the necessary toolchain, dependencies and lab material:
-
-[p4-container](https://github.com/prona-p4-learning-platform/p4-container)
+For testing and non-production setups, we also provide a container image containing the necessary toolchain, dependencies and lab material: [p4-container](https://github.com/prona-p4-learning-platform/p4-container)
 
 The container image can be run by using:
 
