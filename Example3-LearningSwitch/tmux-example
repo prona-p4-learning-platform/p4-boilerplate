@@ -1,0 +1,10 @@
+#!/bin/bash
+tmux new-session -d bash
+tmux split-window -h bash
+tmux send -t 0:0.0 "sudo p4run" C-m
+while ! sudo netstat -tapen | grep -i listen | grep 9090; do
+  sudo netstat -tapen
+  sleep 1
+done
+tmux send -t 0:0.1 "sudo python learning_switch_controller_app.py s1" C-m
+tmux -2 attach-session -d

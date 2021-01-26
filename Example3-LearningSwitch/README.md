@@ -10,7 +10,7 @@ It's assumed that you run this example in a VM, container or host that supports 
 
 ```
 cd p4-boilerplate/Example3-LearningSwitch
-p4run --config p4app.json
+sudo p4run
 ```
 
 This starts mininet. However, the typical mininet hello world
@@ -28,5 +28,20 @@ sudo python learning_switch_controller_app.py s1
 ```
 
 with s1 being the switch that table entries should be added to by the controller. Start the ping from h1 to h2 and see table entries being added. Meanwhile, you can also try to sniff packets on h3, to see flooding & filtering being applied similar to a basic real-world layer 2 switch. See [prona-learningswitch.md](https://github.com/prona-p4-learning-platform/p4-boilerplate/blob/main/Example3-LearningSwitch/prona-learningswitch.md) for an example lab sheet.
+
+You can use tmux to start mininet and learning_switch_controller_app.py together. E.g., by using:
+
+```
+#!/bin/bash
+tmux new-session -d bash
+tmux split-window -h bash
+tmux send -t 0:0.0 "sudo p4run" C-m
+while ! sudo netstat -tapen | grep -i listen | grep 9090; do
+  sudo netstat -tapen
+  sleep 1
+done
+tmux send -t 0:0.1 "sudo python learning_switch_controller_app.py s1" C-m
+tmux -2 attach-session -d
+```
 
 To stop the example exit mininet and stop the controller app.
