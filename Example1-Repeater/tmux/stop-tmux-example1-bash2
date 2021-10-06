@@ -1,5 +1,0 @@
-#!/bin/bash
-SESSION="Ex1-bash2"
-WORKDIR="/home/p4/p4-boilerplate/Example1-Repeater"
-
-tmux kill-session -t $SESSION 2>/dev/null
