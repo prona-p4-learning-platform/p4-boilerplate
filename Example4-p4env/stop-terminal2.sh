@@ -1,5 +1,6 @@
 #!/bin/bash
 SESSION="Ex4-bash2"
 WORKDIR="/home/p4/p4environment/"
+COMMAND=""
 
-tmux kill-session -t $SESSION 2>/dev/null
+../utils/stop-tmux.sh "$SESSION" "$WORKDIR" "$COMMAND"
