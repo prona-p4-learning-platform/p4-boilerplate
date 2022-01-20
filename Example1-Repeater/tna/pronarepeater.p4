@@ -7,10 +7,7 @@ struct headers { }
 struct metadata { }
 
 // Parser can stay empty, not necessary, protocol agnostic, working on physical layer/layer 1
-parser MyIngressParser(packet_in pkt,
-                       out headers hdr,
-                       out metadata meta,
-                       out ingress_intrinsic_metadata_t ig_intr_md) {
+parser MyIngressParser(packet_in pkt, out headers hdr, out metadata meta, out ingress_intrinsic_metadata_t ig_intr_md) {
     state start{
         pkt.extract(ig_intr_md);
         pkt.advance(PORT_METADATA_SIZE);
