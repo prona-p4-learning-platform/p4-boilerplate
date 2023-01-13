@@ -75,13 +75,13 @@ H3 @ Port 3 of P4-Switch, MAC: 00:00:00:00:00:03
 
 * Start the controller and see how it learns MAC addresses
 * Start a ping from H1 to H2
-* Are any packets sent from H1 to H2 also received by H3? Which ones? Why?
+* Are any packets sent from H1 to H2 also received by H3 (try ```mx h3 tshark```)? Which ones? Why?
 
 ## Task 2: Remove learned MAC addresses from dstMacAddr table
 
 * Remove all entries from dstMacAddr table
 * Start a ping from H1 to H2 again
-* Are any packets sent from H1 to H2 also received by H3? Which ones? Why?
+* Are any packets sent from H1 to H2 also received by H3 (try ```mx h3 tshark```)? Which ones? Why?
 
 ## Discussion of ProNA P4 Learning Switch and possible next steps 
 
@@ -91,4 +91,4 @@ H3 @ Port 3 of P4-Switch, MAC: 00:00:00:00:00:03
 * Packets destined to known unicast MAC addresses are forwarded only to the learned ports
 * Implementation is still very basic, compared to real-world switches
 * No "delearning"/aging of table entries, no VLANs, ... etc.
-* Yet, now we saw all essential ingredients to implement more sophisticatednetwork elements and their functions
+* Yet, now we saw all essential ingredients to implement more sophisticated network elements and their functions

@@ -2,6 +2,8 @@
 // ProNA P4 Repeater
 #include <core.p4>
 //BMv2 used #include <v1model.p4> here
+//This example shows the differences when using real hardware P4 switches, hence
+//another model/target platform is used "Tofino Native Architecture (TNA)"
 #include <tna.p4>
 struct headers { }
 struct metadata { }

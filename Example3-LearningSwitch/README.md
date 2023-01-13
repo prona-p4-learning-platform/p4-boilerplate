@@ -24,10 +24,16 @@ will not work right away, as switch starts with empty tables, that need to be fi
 Run the provided controller app based on the p4-learning example in another terminal using 
 
 ```
-sudo python learning_switch_controller_app.py s1
+sudo python3 learning_switch_controller_app.py s1
 ```
 
-with s1 being the switch that table entries should be added to by the controller. Start the ping from h1 to h2 and see table entries being added. Meanwhile, you can also try to sniff packets on h3, to see flooding & filtering being applied similar to a basic real-world layer 2 switch. See [prona-learningswitch.md](https://github.com/prona-p4-learning-platform/p4-boilerplate/blob/main/Example3-LearningSwitch/prona-learningswitch.md) for an example lab sheet.
+with s1 being the switch that table entries should be added to by the controller. Start the ping from h1 to h2 and see table entries being added. Meanwhile, you can also try to sniff packets on h3 by running
+
+```
+mx h3 tshark
+```
+
+to see flooding & filtering being applied similar to a basic real-world layer 2 switch. See [prona-learningswitch.md](https://github.com/prona-p4-learning-platform/p4-boilerplate/blob/main/Example3-LearningSwitch/prona-learningswitch.md) for an example lab sheet.
 
 You can use tmux to start mininet and learning_switch_controller_app.py together. E.g., by using:
 
@@ -40,7 +46,7 @@ while ! sudo netstat -tapen | grep -i listen | grep 9090; do
   sudo netstat -tapen
   sleep 1
 done
-tmux send -t 0:0.1 "sudo python learning_switch_controller_app.py s1" C-m
+tmux send -t 0:0.1 "sudo python3 learning_switch_controller_app.py s1" C-m
 tmux -2 attach-session -d
 ```
 
