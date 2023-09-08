@@ -2,11 +2,13 @@
 #include <v1model.p4>
 
 typedef bit<16> etherType_t;
+typedef bit<9> egressSpec_t;
 typedef bit<48> macAddr_t;
 typedef bit<32> ipv4Addr_t;
 
 const etherType_t IPV4_ETHER_TYPE = 0x0800;
 const etherType_t MPLS_ETHER_TYPE = 0x8847;
+const bit<3> TRAFFIC_CLASS_IP = 0b001;
 
 header ethernet_t {
     macAddr_t dstAddr;
@@ -32,8 +34,11 @@ header ipv4_t {
 
 header mplsLabel_t {
     bit<20> label;
+    // specifies which type of protocol this packet contains
     bit<3> trafficClass;
-    bit<1> bottomOfStack;
+    // When using multiple labels, this could signal that this is the last label in the stack.
+    // Currently unused because only one label is supplied
+    bit<1> bos;
     bit<8> ttl;
 }
 
@@ -68,14 +73,66 @@ parser MyParser(packet_in pkt, out Headers hdr, inout Metadata meta, inout stand
 
     state parse_mpls {
         pkt.extract(hdr.mpls);
-        transition parse_ipv4;
+        transition select(hdr.mpls.trafficClass) {
+            TRAFFIC_CLASS_IP: parse_ipv4;
+            default: accept;
+        }
     }
 }
 
 control MyVerifyChecksum(inout Headers hdr, inout Metadata meta) { apply { } }
 
 control MyIngress(inout Headers hdr, inout Metadata meta, inout standard_metadata_t std_meta) {
-    apply {}
+
+    action drop() {
+        mark_to_drop(std_meta);
+    }
+
+    action ipv4_forward(macAddr_t dstAddr, egressSpec_t port) {
+        std_meta.egress_spec = port;
+        hdr.ethernet.srcAddr = hdr.ethernet.dstAddr;
+        hdr.ethernet.dstAddr = dstAddr;
+        hdr.ipv4.ttl = hdr.ipv4.ttl - 1;
+    }
+
+    table ipv4_lpm {
+        key = {
+            hdr.ipv4.dstAddr: lpm;
+        }
+        actions = {
+            ipv4_forward;
+            drop;
+            NoAction;
+        }
+        size = 1024;
+        default_action = drop();
+    }
+
+    action mpls_forward(egressSpec_t port) {
+        std_meta.egress_spec = port;
+    }
+
+    table mpls_exact {
+        key = {
+            hdr.mpls.label: exact;
+        }
+        actions = {
+            mpls_forward;
+            drop;
+        }
+        size = 1024;
+        default_action = drop();
+    }
+
+    apply {
+        if(hdr.ipv4.isValid() && !hdr.mpls.isValid()) {
+            ipv4_lpm.apply();
+        }
+
+        if(hdr.mpls.isValid()) {
+            mpls_exact.apply();
+        }
+    }
 }
 
 control MyEgress(inout Headers hdr, inout Metadata meta, inout standard_metadata_t std_meta) {
