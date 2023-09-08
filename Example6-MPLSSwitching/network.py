@@ -15,10 +15,11 @@ class Example6Topo(object):
 
         # connect the network components as specified by the diagram in README.md
         self.network.addLink('h1', 's1')
+        self.network.addLink('h2', 's1')
         self.network.addLink('s1', 's2')
-        self.network.addLink('s1', 's4')
         self.network.addLink('s2', 's3')
-        self.network.addLink('s3', 'h2')
+        self.network.addLink('s3', 's5')
+        self.network.addLink('s1', 's4')
         self.network.addLink('s4', 's5')
         self.network.addLink('s5', 'h3')
 
