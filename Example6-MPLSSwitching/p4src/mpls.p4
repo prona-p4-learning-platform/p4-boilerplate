@@ -39,6 +39,7 @@ header mplsLabel_t {
     // When using multiple labels, this could signal that this is the last label in the stack.
     // Currently unused because only one label is supplied
     bit<1> bos;
+    // Prevent possible loops by tracking a TTL.
     bit<8> ttl;
 }
 
@@ -97,7 +98,7 @@ control MyIngress(inout Headers hdr, inout Metadata meta, inout standard_metadat
 
     table ipv4_lpm {
         key = {
-            hdr.ipv4.dstAddr: lpm;
+            hdr.ipv4.destAddr: lpm;
         }
         actions = {
             ipv4_forward;
@@ -105,19 +106,33 @@ control MyIngress(inout Headers hdr, inout Metadata meta, inout standard_metadat
             NoAction;
         }
         size = 1024;
-        default_action = drop();
+        default_action = NoAction();
     }
 
+    // Forward based on label
     action mpls_forward(egressSpec_t port) {
+        std_meta.egress_spec = port; 
+    }
+
+    // same as mpls_forward, but removes the mpls header and sets the
+    // ethertype to IPv4
+    action mpls_end(egressSpec_t port) {
+        // invalidate the mpls header
+        hdr.mpls.setInvalid();
+        // set ethertype to ip
+        hdr.ethernet.ethertype = IPV4_ETHER_TYPE;
+        // send out to port specified in table
         std_meta.egress_spec = port;
     }
 
     table mpls_exact {
         key = {
+            std_meta.ingress_port: exact;
             hdr.mpls.label: exact;
         }
         actions = {
             mpls_forward;
+            mpls_end;
             drop;
         }
         size = 1024;
@@ -140,7 +155,23 @@ control MyEgress(inout Headers hdr, inout Metadata meta, inout standard_metadata
 }
 
 control MyComputeChecksum(inout Headers hdr, inout Metadata meta) {
-    apply { }
+    apply {
+        update_checksum(
+            hdr.ipv4.isValid(),
+            {   hdr.ipv4.version,
+                hdr.ipv4.ipHeaderLen,
+                hdr.ipv4.differentiatedServices,
+                hdr.ipv4.totalLength,
+                hdr.ipv4.identification,
+                hdr.ipv4.flags,
+                hdr.ipv4.fragmentOffset,
+                hdr.ipv4.ttl,
+                hdr.ipv4.protocol,
+                hdr.ipv4.srcAddr,
+                hdr.ipv4.destAddr },
+            hdr.ipv4.headerChecksum,
+            HashAlgorithm.csum16);
+    } 
 }
 
 control MyDeparser(packet_out pkt, in Headers hdr) {

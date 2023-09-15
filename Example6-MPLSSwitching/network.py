@@ -6,12 +6,12 @@ class Example6Topo(object):
         self.network = NetworkAPI()
         # add P4 Switches to Network Topology
         for i in range(5):
-            self.network.addP4Switch('s' + str((i + 1)))
+            self.network.addP4Switch('s' + str((i + 1)), cli_input='s{number}-commands.txt'.format(number = i + 1))
         # add two hosts to the Networks Topology
         for i in range(3):
             self.network.addHost('h' + str((i + 1)))
         self.network.setP4SourceAll('./p4src/mpls.p4')
-        self.network.mixed()
+        
 
         # connect the network components as specified by the diagram in README.md
         self.network.addLink('h1', 's1')
@@ -23,6 +23,7 @@ class Example6Topo(object):
         self.network.addLink('s4', 's5')
         self.network.addLink('s5', 'h3')
 
+        self.network.l3()
         # enable pcaps and logging
         self.network.enablePcapDumpAll()
         self.network.enableLogAll()

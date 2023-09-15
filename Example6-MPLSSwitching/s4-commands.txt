@@ -1,0 +1,2 @@
+table_add mpls_exact mpls_end 1 10 => 2
+table_add mpls_exact mpls_end 2 10 => 1

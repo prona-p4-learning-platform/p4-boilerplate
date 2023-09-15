@@ -1,0 +1,2 @@
+table_add mpls_exact mpls_forward 3 10 => 2
+table_add ipv4_lpm ipv4_forward 10.0.0.3/8 => 56:6d:ad:2b:a2:61 3
