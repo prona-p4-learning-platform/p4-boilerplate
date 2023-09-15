@@ -8,7 +8,7 @@ typedef bit<32> ipv4Addr_t;
 
 const etherType_t IPV4_ETHER_TYPE = 0x0800;
 const etherType_t MPLS_ETHER_TYPE = 0x8847;
-const bit<3> TRAFFIC_CLASS_IP = 0b001;
+const bit<4> TRAFFIC_CLASS_IP = 0b001;
 
 header ethernet_t {
     macAddr_t dstAddr;
@@ -33,14 +33,10 @@ header ipv4_t {
 }
 
 header mplsLabel_t {
+    // Label which decides the path the packet will take
     bit<20> label;
     // specifies which type of protocol this packet contains
-    bit<3> trafficClass;
-    // When using multiple labels, this could signal that this is the last label in the stack.
-    // Currently unused because only one label is supplied
-    bit<1> bos;
-    // Prevent possible loops by tracking a TTL.
-    bit<8> ttl;
+    bit<4> trafficClass;
 }
 
 struct Headers {
@@ -89,11 +85,21 @@ control MyIngress(inout Headers hdr, inout Metadata meta, inout standard_metadat
         mark_to_drop(std_meta);
     }
 
+    // perform basic ipv4 forwarding
     action ipv4_forward(macAddr_t dstAddr, egressSpec_t port) {
         std_meta.egress_spec = port;
         hdr.ethernet.srcAddr = hdr.ethernet.dstAddr;
         hdr.ethernet.dstAddr = dstAddr;
         hdr.ipv4.ttl = hdr.ipv4.ttl - 1;
+    }
+
+    // this action adds a mpls label to a packet and sends it on its way
+    action mpls_begin(bit<20> label, egressSpec_t port) {
+        hdr.ethernet.ethertype = MPLS_ETHER_TYPE;
+        hdr.mpls.setValid();
+        hdr.mpls.label = label;
+        hdr.mpls.trafficClass = TRAFFIC_CLASS_IP;
+        std_meta.egress_spec = port;
     }
 
     table ipv4_lpm {
@@ -103,6 +109,7 @@ control MyIngress(inout Headers hdr, inout Metadata meta, inout standard_metadat
         actions = {
             ipv4_forward;
             drop;
+            mpls_begin;
             NoAction;
         }
         size = 1024;
@@ -140,12 +147,10 @@ control MyIngress(inout Headers hdr, inout Metadata meta, inout standard_metadat
     }
 
     apply {
-        if(hdr.ipv4.isValid() && !hdr.mpls.isValid()) {
-            ipv4_lpm.apply();
-        }
-
         if(hdr.mpls.isValid()) {
             mpls_exact.apply();
+        } else {
+            ipv4_lpm.apply();
         }
     }
 }
