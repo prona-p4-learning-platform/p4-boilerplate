@@ -1,4 +1,5 @@
-log/
-pcap/
-topology.json
+p4src/*.p4i
 p4src/*.json
+pcap/
+log/
+topology.json
