@@ -37,6 +37,8 @@ header mplsLabel_t {
     bit<20> label;
     // specifies which type of protocol this packet contains
     bit<4> trafficClass;
+    // ttl in order to prevent loops
+    bit<8> ttl;
 }
 
 struct Headers {
@@ -99,6 +101,7 @@ control MyIngress(inout Headers hdr, inout Metadata meta, inout standard_metadat
         hdr.mpls.setValid();
         hdr.mpls.label = label;
         hdr.mpls.trafficClass = TRAFFIC_CLASS_IP;
+        hdr.mpls.ttl = 15;
         std_meta.egress_spec = port;
     }
 
@@ -119,6 +122,7 @@ control MyIngress(inout Headers hdr, inout Metadata meta, inout standard_metadat
     // Forward based on label
     action mpls_forward(egressSpec_t port) {
         std_meta.egress_spec = port; 
+        hdr.mpls.ttl = hdr.mpls.ttl - 1;
     }
 
     // same as mpls_forward, but removes the mpls header and sets the
