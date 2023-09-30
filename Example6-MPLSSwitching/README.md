@@ -1,4 +1,4 @@
-# Example 6: Multiprotocol Lable-Switching
+# Example 6: Multiprotocol Label-Switching
 This example showcases how P4 can be used to implement MPLS-Switching utilizing the Network API from p4utils.
 It shows how one could use P4 to implement a custom protocol and perform forwarding based on its header. In this case, a very simple form
 of Multi Protocol Label Switching is performed. Packets can be given a Label and be routed a specific way based on table entries.
