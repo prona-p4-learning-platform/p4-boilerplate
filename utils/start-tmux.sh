@@ -7,12 +7,14 @@ COMMAND=$3
 
 tmux start-server
 {
-  # if multiple clients/users are connected to tmux session, make sure that session is only created anre send-keys is only executed once, using shell-based semaphore
+  # if multiple clients/users are connected to tmux session, make sure that session is only created and send-keys is only executed once, using shell-based semaphore
   flock -w 10 200
   tmux has-session -t $SESSION 2>/dev/null
   # if session does not exist, create a new independant session group and run initialization command
   if [ $? != 0 ] ; then
     tmux new-session -d -s $SESSION -n $SESSION
+    tmux setw -g mouse on
+    tmux setw window-size smallest
     tmux send-keys -t $SESSION "cd $WORKDIR" Enter "$COMMAND" Enter
   fi
   flock -u 200
