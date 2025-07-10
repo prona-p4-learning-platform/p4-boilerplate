@@ -1,11 +1,11 @@
-from ryu.base import app_manager
-from ryu.ofproto import ofproto_v1_0
-from ryu.lib import dpid as dpid_lib
-from ryu.controller import dpset
+from os_ken.base import app_manager
+from os_ken.ofproto import ofproto_v1_0
+from os_ken.lib import dpid as dpid_lib
+from os_ken.controller import dpset
 import threading
 
 
-class OpenFlowApp(app_manager.RyuApp):
+class OpenFlowApp(app_manager.OSKenApp):
 
     OFP_VERSIONS = [ofproto_v1_0.OFP_VERSION]
 

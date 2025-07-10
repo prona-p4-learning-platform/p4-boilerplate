@@ -39,10 +39,11 @@
 
 * Why do you get a warning regarding missing connection to 127.0.0.1:6633? Examine the code in OpenFlowTopo.py.
 * Get an idea about what ryu (https://ryu-sdn.org/) does and how it can be used to experiment with SDN.
-* Start the ryu controller together with the provided OpenFlowApp.py
+* We'll use the successor os-ken (https://github.com/openstack/os-ken) that was initially based on ryu.
+* Start the os-ken controller together with the provided OpenFlowApp.py
 
 ```
-	sudo ryu-manager OpenFlowApp.py
+	sudo osken-manager OpenFlowApp.py
 ```
 
 * Change the OpenFlowApp.py to install flows that enable ping (ICMP) between the hosts in the topology. Hint: Ethertype IPv4 = 0x0800 and Ethertype ARP = 0x0806.
