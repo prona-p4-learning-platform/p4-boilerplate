@@ -13,7 +13,7 @@ switch in the corresponding
 * Switch forwards Layer 2 frames, based on destination MAC address, learned from received frames source MAC address
 * Flood & Filter functionality of a typical Layer 2 switch
   * Source MAC addresses from received packets should be learned (i.e., inserted in the MAC address table as future destinations) referencing the ingress port
-  * If destination MAC address is not in the table or multicast/broadcast addressis used, flood the packet to all other egress ports (excluding the ingress port)
+  * If destination MAC address is not in the table or multicast/broadcast address is used, flood the packet to all other egress ports (excluding the ingress port)
   * If destination MAC address is in the table, only use the egress port referenced in the table entry to forward the packet
 
 ```mermaid
@@ -24,30 +24,30 @@ switch in the corresponding
 ```
 
 ```
-H1 @ Port 1 of P4-Switch, MAC: 00:00:00:00:00:01
-H2 @ Port 2 of P4-Switch, MAC: 00:00:00:00:00:02
-H3 @ Port 3 of P4-Switch, MAC: 00:00:00:00:00:03
+H1 @ Port 1 of P4-Switch, MAC: 00:00:0a:00:00:01
+H2 @ Port 2 of P4-Switch, MAC: 00:00:0a:00:00:02
+H3 @ Port 3 of P4-Switch, MAC: 00:00:0a:00:00:03
 ```
 
 ## P4Runtime / Control Plane
 * We already implemented the Flooding (Broadcast) and Filtering (MAC address table) in the static switch
 * How can we implement the learning part?
   * Learning was manually carried out using the CLI to add a table entry
-  * CLI, API, gRPC etc. could be used to automatethis manual process (e.g., using a Python program)
-  * This leads to the implementation of a smallControl Plane App to change switch config/logicduring runtime
-  * We'll use the CPU port to inform our App, thata new MAC address was seen and insertinga new entry for this address in the table
+  * CLI, API, gRPC etc. could be used to automate this manual process (e.g., using a Python program)
+  * This leads to the implementation of a small Control Plane App to change switch config/logic during runtime
+  * We'll use the CPU port to inform our App, that a new MAC address was seen and inserting a new entry for this address in the table
 
 ## Extending the minimalistic switch to become a learning switch
 
 ### Add an additional srcMacAddr table
 
 * Add a table to learn source MAC address, idea: if incoming source MAC address is already in the table -> do nothing (NoAction)
-* if MAC address is not in the table, learn it by cloning the packet from ingress to egress (I2E) and sending it to the CPU port (using a port mirror in the switch)
+* if MAC address is not in the table, learn it by cloning the packet from ingress to egress (I2E) and sending it to the CPU port (using a port mirror in the switch). The controller will listen for and react on packets coming from the CPU port.
 
 ### Add a new CPU packet protocol to be used to send learned MAC addresses to controller
 
-* Use a custom CPU header to packets to controller via CPU port (containing MAC address to learn on ingress port)
-* Be sure to add the cpu header to the deparser to include it in the outgoing packet
+* Use a custom CPU header to send packets to controller via CPU port (containing MAC address to learn on ingress port)
+* Be sure to add the cpu header to the deparser to include it in the outgoing packet sent to the controller
 
 ## Implement a controller app (learning_switch_controller_app_p4-learning.py)
 
@@ -68,7 +68,7 @@ H3 @ Port 3 of P4-Switch, MAC: 00:00:00:00:00:03
 
 ### Receive incoming CPU packets from mirror and add learned MAC addresses to srcMacAddr and dstMacAddr table
 
-* Continuously sniff for packets on cpu port interface and treat received packets as information to learn about new mac addresses on ingress ports
+* Continuously sniff for packets on CPU port interface and treat received packets as information to learn about new mac addresses on ingress ports
 * Add learned MAC addresses and their ports using switch API for table_add
 
 ## Task 1: Start controller
