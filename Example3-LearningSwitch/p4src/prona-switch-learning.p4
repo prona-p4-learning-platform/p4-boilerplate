@@ -33,7 +33,7 @@ struct metadata {
     bit<9> ingressPort;
 }
 
-// Parser can stay empty, not necessary, protocol agnostic, working on physical layer/layer 1
+// Parser to extract ethernet header, switch is working on data link layer/layer 2
 parser MyParser(packet_in pkt, out headers hdr, inout metadata meta, inout standard_metadata_t std_meta) {
     state start{
         pkt.extract(hdr.ethernet);
