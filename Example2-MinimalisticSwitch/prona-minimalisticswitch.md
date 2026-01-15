@@ -4,7 +4,7 @@
 
 * Switch forwards Layer 2 frames, based on destination MAC address
 * Correspondingly, topology now mentions MAC address of each host
-* All frames reaching the switch with a destination MAC address of 00:00:00:00:00:02 should go out on Port 2, same for MAC address of H1 on Port 1
+* All frames reaching the switch with a destination MAC address of 00:00:0a:00:00:02 should go out on Port 2, same for MAC address of H1 on Port 1
   * Layer 2 Ethernet header needs to be parsed
   * As for real-world Layer 2 network elements, switch needs a table to match incoming destination MAC address and select approriate egress port
 
@@ -15,8 +15,8 @@
 ```
 
 ```
-H1 @ Port 1 of P4-Switch, MAC: 00:00:00:00:00:01
-H2 @ Port 2 of P4-Switch, MAC: 00:00:00:00:00:02
+H1 @ Port 1 of P4-Switch, MAC: 00:00:0a:00:00:01
+H2 @ Port 2 of P4-Switch, MAC: 00:00:0a:00:00:02
 ```
 
 ## Parser
@@ -29,8 +29,8 @@ H2 @ Port 2 of P4-Switch, MAC: 00:00:00:00:00:02
 * Can we use the extracted header fields afterwards directly to do the following?
 
 ```
-if (hdr.ethernet.dstAddr == 0x000000000001) { std_meta.egress_spec = 1; }
-if (hdr.ethernet.dstAddr == 0x000000000002) { std_meta.egress_spec = 2; }
+if (hdr.ethernet.dstAddr == 0x00000a000001) { std_meta.egress_spec = 1; }
+if (hdr.ethernet.dstAddr == 0x00000a000002) { std_meta.egress_spec = 2; }
 ```
 
 * That's possible and not as dumb as the repeater... but what about additional hosts? Where to send broadcast destination? Better use a MAC address table for match-action...
